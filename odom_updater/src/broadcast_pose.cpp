@@ -8,10 +8,11 @@
 #include "rclcpp/rclcpp.hpp"
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2_ros/transform_broadcaster.h"
-#include "turtlesim/msg/pose.hpp"
+
 #include <nav_msgs/msg/odometry.hpp>
 
 using std::placeholders::_1;
+
 
 
 class BroadcastPose : public rclcpp::Node
@@ -20,16 +21,17 @@ class BroadcastPose : public rclcpp::Node
 public:
     BroadcastPose() : Node("odom_updater")
     {
-        base_footprint_ = this->declare_parameter<std::string>("/robot_pose", "base_footprint");
-
+        base_footprint_ = this->declare_parameter<std::string>("/robot_pose", "/robot1/base_footprint");
+        odom_link = this->declare_parameter("odom_link", "/robot1/odom");
+        
 
         std::ostringstream stream;
-        stream << "/robot1" << base_footprint_.c_str();
+        stream << base_footprint_.c_str();
         std::string topic_name = stream.str();
 
-    
+        odom_pub_ = this->create_publisher<nav_msgs::msg::Odometry>("/robot1/odom", 10);
+        base_footprint_pub = this->create_publisher<nav_msgs::msg::Odometry>("/robot1/base_footprint", 10);
 
-    // Initialize the transform broadcaster
 
         tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
 
@@ -57,8 +59,10 @@ private:
         base_foot_tf.transform.translation.z = 0.0;
         base_foot_tf.transform.rotation = msg->pose.pose.orientation;
 
-        base_foot_tf.header.frame_id = "odom";
+
+        base_foot_tf.header.frame_id = "/robot1/odom";
         base_foot_tf.child_frame_id = base_footprint_.c_str();
+        tf_broadcaster_->sendTransform(base_foot_tf);
 
 
 
@@ -77,15 +81,20 @@ private:
 
 
         odom_tf.header.frame_id = "world";
-        odom_tf.child_frame_id = "odom";
+        odom_tf.child_frame_id = "/robot1/odom";
 
         tf_broadcaster_->sendTransform(odom_tf);
+
+        RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", base_footprint_.c_str());
+        
  
     }
 
     std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscription_;
-    std::string base_footprint_;
+ 
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_, base_footprint_pub;
+    std::string odom_link, base_footprint_;
 
 };
 
