@@ -56,58 +56,75 @@ private:
     {
 
         visualization_msgs::msg::Marker artag;
+
         
 
-    while (x_goal != 6.5 && y_goal != 5.0)
-    {
+        m_bot_controller->set_goal(x_0, y_0);
+
+        while (goal_reached != true)
+        {
+
+            
+
+            if (x_0 == 1.0 && y_0 == 1.0){
+
+                artag.header.frame_id = "origin0";
+                artag.pose.position.x = x_0;
+                artag.pose.position.y = y_0;
+
+                scan_n_search();
+
+                m_bot_controller->set_goal(6.5, 5.0);
+
+                goal_reached = true;
+
+            }
+
+            else if (x_1 == 1.0 && y_0 == -1.0){
 
                 
 
-        if (x_0 == 1.0 && y_0 == 1.0){
+                artag.header.frame_id = "origin1";
+                artag.pose.position.x = x_0;
+                artag.pose.position.y = y_0;
+
+                scan_n_search();
+                m_bot_controller->set_goal(6.5, 5.0);
+
+                goal_reached = true;
+                
+            }
 
 
-            scan_n_search();
-            m_bot_controller->set_goal(6.5, 5.0);
-
-            artag.header.frame_id = "origin0";
-            artag.pose.position.x = x_0;
-            artag.pose.position.y = y_0;
-        }
-
-        else if (x_1 == 1.0 && y_0 == -1.0){
-
-            scan_n_search();
-            m_bot_controller->set_goal(6.5, 5.0);
-
-            artag.header.frame_id = "origin1";
-            artag.pose.position.x = x_0;
-            artag.pose.position.y = y_0;
-        }
+            else if (x_1 == -1.0 && y_0 == -1.0){
 
 
-        else if (x_1 == -1.0 && y_0 == -1.0){
+                artag.header.frame_id = "origin2";
+                artag.pose.position.x = x_0;
+                artag.pose.position.y = y_0;
 
-            scan_n_search();
-            m_bot_controller->set_goal(6.5, 5.0);
+                scan_n_search();
+                m_bot_controller->set_goal(6.5, 5.0);
 
-            artag.header.frame_id = "origin2";
-            artag.pose.position.x = x_0;
-            artag.pose.position.y = y_0;
-        }
+                goal_reached = true;
+            }
 
 
-        else if (x_1 == -1.0 && y_0 == 1.0){
+            else if (x_1 == -1.0 && y_0 == 1.0){
 
-            scan_n_search();
-            m_bot_controller->set_goal(6.5, 5.0);
 
-            artag.header.frame_id = "origin3";
-            artag.pose.position.x = x_0;
-            artag.pose.position.y = y_0;
+                artag.header.frame_id = "origin3";
+                artag.pose.position.x = x_0;
+                artag.pose.position.y = y_0;
+
+                scan_n_search();
+                m_bot_controller->set_goal(6.5, 5.0);
+
+                goal_reached = true;
+
+            }
 
         }
-
-    }
             
 
 
@@ -131,6 +148,7 @@ private:
 
     void go_to_finalgoal()
     {
+
 
 
     }
