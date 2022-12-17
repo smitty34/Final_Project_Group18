@@ -74,41 +74,41 @@ void TargetReacher::img_finder(const ros2_aruco_interfaces::msg::ArucoMarkers::S
 }
 
 
-// void TargetReacher::marker_listener(tf2_ros::Buffer& tf_buffer)
-// {
-//     geometry_msgs::msg::TransformStamped bf_trans;
+void TargetReacher::marker_listener(tf2_ros::Buffer& tf_buffer)
+{
+    geometry_msgs::msg::TransformStamped bf_trans;
 
     
 
 
-//     try
-//         {
-//             bf_trans = tf_buffer.lookupTransform("world", "/aruco_markers", rclcpp::Time(0));
+    try
+        {
+            bf_trans = tf_buffer.lookupTransform("final_destination", "/robot1/odom", rclcpp::Time(0));
 
-//             auto tf_x = bf_trans.transform.translation.x;
-//             auto tf_y = bf_trans.transform.translation.y;
-//             auto tf_z = bf_trans.transform.translation.z;
+            auto tf_x = bf_trans.transform.translation.x;
+            auto tf_y = bf_trans.transform.translation.y;
+            auto tf_z = bf_trans.transform.translation.z;
 
-//             tf2::Quaternion q(bf_trans.transform.rotation.x, bf_trans.transform.rotation.y, bf_trans.transform.rotation.z, bf_trans.transform.rotation.w);
+            tf2::Quaternion q(bf_trans.transform.rotation.x, bf_trans.transform.rotation.y, bf_trans.transform.rotation.z, bf_trans.transform.rotation.w);
 
-//             double roll;
-//             double pitch;
-//             double yaw;
+            double roll;
+            double pitch;
+            double yaw;
 
-//             tf2::Matrix3x3 m(q);
+            tf2::Matrix3x3 m(q);
 
-//             m.getRPY(roll, pitch, yaw);
+            m.getRPY(roll, pitch, yaw);
 
-//             RCLCPP_INFO(this->get_logger(), "Marker Reached!");
+            RCLCPP_INFO(this->get_logger(), "Marker Reached!");
 
         
-//         }
+        }
 
-//         catch (tf2::TransformException& ex){
+        catch (tf2::TransformException& ex){
 
-//             RCLCPP_WARN(this->get_logger(), "%s", ex.what());
-//         }
-// }
+            RCLCPP_WARN(this->get_logger(), "%s", ex.what());
+        }
+}
 
 
 
