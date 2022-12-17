@@ -24,12 +24,20 @@ public:
         subscription_ = this->create_subscription<nav_msgs::msg::Odometry>("/robot1/odom", 10,
                                                                             std::bind(&BroadcastPose::odom_callback, this, std::placeholders::_1));
 
+
+
+
     }
 
 
 protected:
 
     void robot_footprint(geometry_msgs::msg::TransformStamped t_msg)
+    {
+        tf_broadcaster_->sendTransform(t_msg);
+    }
+
+    void final_destination(geometry_msgs::msg::TransformStamped t_msg)
     {
         tf_broadcaster_->sendTransform(t_msg);
     }
@@ -58,8 +66,28 @@ protected:
 
         BroadcastPose::robot_footprint(t_msg);
 
+        geometry_msgs::msg::TransformStamped t;
+
+        t.header.stamp = this->get_clock()->now();
+        t.header.frame_id = "origin1";
+        t.child_frame_id = "final_destination";
+
+        t.transform.translation.x = 6.0;
+        t.transform.translation.y = 4.5;
+        t.transform.translation.z = 0;
+
+
+        t.transform.rotation.x = 0;
+        t.transform.rotation.y = 0;
+        t.transform.rotation.z = 0;
+        t.transform.rotation.w = 1;
+
+        BroadcastPose::robot_footprint(t);
+
 
     }
+
+
 
 private:
 
